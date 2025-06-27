@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException; // Import this
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
@@ -28,11 +29,9 @@ public class CategoriesController
         this.productDao = productDao;
     }
 
-    // @GetMapping annotation activated here
     @GetMapping
     public List<Category> getAll()
     {
-        // find and return all categories
         return categoryDao.getAllCategories();
     }
 
@@ -40,26 +39,29 @@ public class CategoriesController
     @GetMapping("{id}")
     public Category getById(@PathVariable int id)
     {
-        // get the category by id
-        return categoryDao.getById(id);
+        Category category = categoryDao.getById(id);
+        if (category == null) {
+            // If category is not found, throw a ResponseStatusException with 404 Not Found
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found.");
+        }
+        return category;
     }
 
-    // The url to return all products in category 1 would look like this
+
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
-        // get a list of product by categoryId
         return productDao.getProductsByCategoryId(categoryId);
     }
 
     // @PostMapping and @PreAuthorize annotations activated here
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Category addCategory(@RequestBody Category category)
+    public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
-        // insert the category
-        return categoryDao.create(category);
+        Category createdCategory = categoryDao.create(category);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
     // @PutMapping("{id}") and @PreAuthorize annotations activated here
@@ -67,17 +69,18 @@ public class CategoriesController
     @PreAuthorize("hasRole('ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
     {
-        // update the category by id
         categoryDao.update(id, category);
     }
-
-
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id)
     {
-        // delete the category by id
+
+        Category existingCategory = categoryDao.getById(id);
+        if (existingCategory == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category to delete not found.");
+        }
         categoryDao.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

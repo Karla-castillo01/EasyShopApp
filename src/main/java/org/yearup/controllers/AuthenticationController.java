@@ -48,7 +48,7 @@ public class AuthenticationController {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.createToken(authentication, false);
+        String jwt = tokenProvider.createToken(authentication);
 
         try
         {

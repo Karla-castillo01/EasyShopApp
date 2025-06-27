@@ -1,60 +1,70 @@
 package org.yearup.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.math.BigDecimal; // Import for price/lineTotal
 
-import java.math.BigDecimal;
+public class ShoppingCartItem {
+    private Product product;
+    private int quantity;
+    // private BigDecimal discountPercent; // REMOVE THIS LINE
+    private BigDecimal lineTotal;
 
-public class ShoppingCartItem
-{
-    private Product product = null;
-    private int quantity = 1;
-    private BigDecimal discountPercent = BigDecimal.ZERO;
+    // Default Constructor
+    public ShoppingCartItem() {
+        this.product = new Product();
+        this.quantity = 0;
+        // this.discountPercent = BigDecimal.ZERO; // REMOVE OR COMMENT OUT THIS LINE
+        this.lineTotal = BigDecimal.ZERO;
+    }
 
+    // Constructor with all fields (Adjust parameters)
+    // REMOVE THE discountPercent PARAMETER
+    public ShoppingCartItem(Product product, int quantity, BigDecimal lineTotal) {
+        this.product = product;
+        this.quantity = quantity;
+        this.lineTotal = lineTotal;
+    }
 
-    public Product getProduct()
-    {
+    // --- Getters and Setters ---
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product)
-    {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
-    public int getQuantity()
-    {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity)
-    {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public BigDecimal getDiscountPercent()
-    {
-        return discountPercent;
+    // REMOVE THESE GETTER AND SETTER FOR discountPercent
+    // public BigDecimal getDiscountPercent() {
+    //     return discountPercent;
+    // }
+    //
+    // public void setDiscountPercent(BigDecimal discountPercent) {
+    //     this.discountPercent = discountPercent;
+    // }
+
+    public BigDecimal getLineTotal() {
+        return lineTotal;
     }
 
-    public void setDiscountPercent(BigDecimal discountPercent)
-    {
-        this.discountPercent = discountPercent;
+    public void setLineTotal(BigDecimal lineTotal) {
+        this.lineTotal = lineTotal;
     }
 
-    @JsonIgnore
-    public int getProductId()
-    {
-        return this.product.getProductId();
-    }
-
-    public BigDecimal getLineTotal()
-    {
-        BigDecimal basePrice = product.getPrice();
-        BigDecimal quantity = new BigDecimal(this.quantity);
-
-        BigDecimal subTotal = basePrice.multiply(quantity);
-        BigDecimal discountAmount = subTotal.multiply(discountPercent);
-
-        return subTotal.subtract(discountAmount);
+    // toString for easy debugging (adjust if you removed discountPercent)
+    @Override
+    public String toString() {
+        return "ShoppingCartItem{" +
+                "product=" + product +
+                ", quantity=" + quantity +
+                ", lineTotal=" + lineTotal + // REMOVED discountPercent
+                '}';
     }
 }
