@@ -1,6 +1,6 @@
 # ✨ EasyShop Backend API
 ## Project Overview
-This project implements the backend API for an e-commerce application named "EasyShop". It provides robust RESTful endpoints for managing products, categories, user authentication, and shopping cart functionalities. The API is built with Spring Boot and interacts with a MySQL database.
+This project implements the backend API for an e-commerce application named "EasyShop". It provides RESTful endpoints for managing products, categories, user authentication, and shopping cart functionalities. The API is built with Spring Boot and interacts with a MySQL database.
 
 ### 🚀 Key Features
 * **User Management & Security**: Secure registration, login, JWT-based access, and role-based permissions (admin vs. user).
@@ -13,26 +13,27 @@ This project implements the backend API for an e-commerce application named "Eas
 
 ### 📸 Application Screens
 * **Homepage with Products**:
-
-
-* **Shopping Cart View:**
-
-(Replace placeholder_cart.png with your actual screenshot path)
+ 
+![Home screen](https://github.com/user-attachments/assets/a4e21fa9-9bca-423e-b806-a7bce256bf5a)
 
 * **Login Page:**
 
-(Replace placeholder_login.png with your actual screenshot path)
+![admin login](https://github.com/user-attachments/assets/ae15f8f1-4bbc-4b07-a086-7d1bba04d24d)
+
+* **Shopping Cart View:**
+
+![cart](https://github.com/user-attachments/assets/d45e77c6-20f2-44fc-a821-98f001d70dd8)
 
 ### 🧑‍💻 Code Highlight: Shopping Cart Updates
 One interesting part of the code is the ```addProductToCart``` method in ```MySqlShoppingCartDao.java```. This method makes adding items to the cart a smooth experience for the user, even if they add the same item multiple times.
 
-Instead of just adding a new line every time, this code is smart enough to:
+Instead of just adding a new line every time, this code is :
 
-* **Check if the item is already there**: It first looks to see if the product is already in the user's shopping cart.
+* **Checking if the item is already there**: It first looks to see if the product is already in the user's shopping cart.
 
-* **Update Quantity (Not Duplicates)**: If the product is already in the cart, it simply increases the quantity of that item instead of creating a new entry. This keeps the cart neat and prevents clutter.
+* **Updating Quantity (Not Duplicates)**: If the product is already in the cart, it simply increases the quantity of that item instead of creating a new entry. This keeps the cart neat and prevents clutter.
 
-* **Consistency with Transactions**: This whole process happens within a database "transaction." All changes (checking, adding, or updating) either complete successfully together, or if anything goes wrong, all changes are undone. This guarantees the shopping cart data is always accurate and doesn't get messed up halfway through an operation.
+* **Consistently handling Transactions**: This whole process happens within a database "transaction." All changes (checking, adding, or updating) either complete successfully together, or if anything goes wrong, all changes are undone. This guarantees the shopping cart data is always accurate and doesn't get messed up halfway through an operation.
 
 This piece of code ensures a reliable and intuitive cart experience.
 
@@ -47,16 +48,16 @@ connection.setAutoCommit(false); // Starts a database transaction
 
         // SQL logic to check if product exists in cart
         String checkSql = "SELECT quantity FROM shopping_cart WHERE user_id = ? AND product_id = ?";
-        // ... (PreparedStatement and ResultSet logic for check) ...
+        //  (PreparedStatement and ResultSet logic for check)
 
         if (rs.next()) {
             // If product is found, update its quantity
             String updateSql = "UPDATE shopping_cart SET quantity = ?, date_added = ? WHERE user_id = ? AND product_id = ?";
-            // ... (PreparedStatement for update) ...
+            //  (PreparedStatement for update) 
         } else {
             // If product is not found, insert as a new item
             String insertSql = "INSERT INTO shopping_cart (user_id, product_id, quantity, date_added) VALUES (?, ?, ?, ?)";
-            // ... (PreparedStatement for insert) ...
+            // (PreparedStatement for insert)
         }
 
         connection.commit(); // Makes all changes permanent if no errors
